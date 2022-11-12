@@ -1,0 +1,96 @@
+Imports System.Data.OleDb
+'Object Linking and Embedding Database
+Public Class Form1
+Dim cn As New OleDbConnection
+Dim cmd As OleDbCommand
+Dim dr As OleDbDataReader
+Dim adp As New OleDbDataAdapter
+Dim ds As New DataSet
+Public Sub display()
+ds.Clear()
+adp = New OleDbDataAdapter("select * from stud", cn)
+adp.Fill(ds)
+DataGridView1.DataSource = ds.Tables(0)
+End Sub
+Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles MyBase.Load
+cn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data
+Source=C:\Users\nidhidesai\Documents\Visual Studio 2010\Projects\0 ND NET
+Programs\DBConnection\Student.accdb"
+cn.Open()
+display()
+cn.Close()
+End Sub
+
+Private Sub btnInsert_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles btnInsert.Click
+Try
+cn.Open()
+cmd = New OleDbCommand("insert into Stud values(" & txtRollNo.Text & ",'" &
+txtName.Text & "'," & txtSem.Text & ") ", cn)
+cmd.ExecuteNonQuery()
+MsgBox("Record Inserted")
+display()
+Catch ex As Exception
+MsgBox("Insert Details")
+End Try
+cn.Close()
+End Sub
+
+Private Sub btnUpdate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles btnUpdate.Click
+Try
+cn.Open()
+cmd = New OleDbCommand("update Stud set Name='" & txtName.Text & "' , Sem=" &
+txtSem.Text & " where Rno=" & txtRollNo.Text & "", cn)
+cmd.ExecuteNonQuery()
+MsgBox("Record Updated")
+display()
+Catch ex As Exception
+MsgBox("Update Details")
+End Try
+cn.Close()
+End Sub
+
+Private Sub btnDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles btnDelete.Click
+Try
+cn.Open()
+cmd = New OleDbCommand("delete from Stud where Rno=" & txtRollNo.Text & "", cn)
+cmd.ExecuteNonQuery()
+MsgBox("Record Deleted")
+display()
+Catch ex As Exception
+MsgBox("Delete Details")
+End Try
+cn.Close()
+End Sub
+
+Private Sub btnSearch_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles btnSearch.Click
+Try
+cn.Open()
+cmd = New OleDbCommand("select * from Stud where Rno=" & txtRollNo.Text & "",
+cn)
+dr = cmd.ExecuteReader()
+While dr.Read()
+txtName.Text = dr.Item(1)
+txtSem.Text = dr.Item(2)
+End While
+Catch ex As Exception
+MsgBox(ex.ToString, , "Record Not Found")
+End Try
+cn.Close()
+End Sub
+
+Private Sub btnClear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles btnClear.Click
+txtRollNo.Clear()
+txtName.Clear()
+txtSem.Clear()
+End Sub
+Private Sub btnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+Handles btnClose.Click
+Me.Close()
+End Sub
+End Class
